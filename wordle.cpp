@@ -13,7 +13,7 @@ using namespace std;
 
 
 // Add prototypes of helper functions here
-
+bool wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, int idxFloat, std::set<std::string>& answerBank, std::string& tempString);
 
 // Definition of primary wordle function
 std::set<std::string> wordle(
@@ -24,7 +24,7 @@ std::set<std::string> wordle(
     // Add your code here
     std::set<std::string> answerBank;
     std::string temp = in; 
-    bool temp = wordleHelper(in, floating, dict, 0, 0, answerBank, temp);
+    bool tempStr = wordleHelper(in, floating, dict, 0, 0, answerBank, tempStr);
     return answerBank;
     
 }
