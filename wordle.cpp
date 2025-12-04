@@ -49,7 +49,7 @@ bool wordleHelper(const std::string& in, const std::string& floating, const std:
         }else{
             for (int i = 0; i < 26; i++){
                 tempString[idxIn] = i + 'a';
-                bool status = wordleHelper(in, floating, dict, idxIn++, idxFloat++, answerBank, tempString);
+                bool status = wordleHelper(in, floating, dict, idxIn++, idxFloat, answerBank, tempString);
                 if (status){
                     //smth smth smth... tbd ig
                     if (dict.find(tempString) != dict.end()){
