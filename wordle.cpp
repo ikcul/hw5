@@ -24,7 +24,7 @@ std::set<std::string> wordle(
     // Add your code here
     std::set<std::string> answerBank;
     std::string temp = in; 
-    bool tempStr = wordleHelper(in, floating, dict, 0, 0, answerBank, tempStr);
+    bool tempStr = wordleHelper(in, floating, dict, 0, 0, answerBank, temp);
     return answerBank;
     
 }
