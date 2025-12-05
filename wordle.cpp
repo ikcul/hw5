@@ -13,7 +13,7 @@ using namespace std;
 
 
 // Add prototypes of helper functions here
-void wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, std::map<char, int>& floatingUsage, std::set<std::string>& answerBank, std::string& tempString);
+void wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, std::map<char, int>& floatingUsage, std::set<std::string>& answerBank, std::string& tempString, std::set<char>& usedChars);
 
 // Definition of primary wordle function
 std::set<std::string> wordle(
@@ -23,19 +23,20 @@ std::set<std::string> wordle(
 {
     // Add your code here
     std::set<std::string> answerBank;
-    std::string temp = in; 
+    std::string temp = in;
+    std::set<char> usedChars;
     std::map<char, int> floatingUsage;
     for (char c : floating){
         floatingUsage[c]++;
     }
 
-    wordleHelper(in, floating, dict, 0, floatingUsage, answerBank, temp);
+    wordleHelper(in, floating, dict, 0, floatingUsage, answerBank, temp, usedChars);
     return answerBank;
     
 }
 
 // Define any helper functions here
-void wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, std::map<char, int>& floatingUsage, std::set<std::string>& answerBank, std::string& tempString){
+void wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, std::map<char, int>& floatingUsage, std::set<std::string>& answerBank, std::string& tempString, std::set<char>& usedChars){
     //prune before even doing anything
     int floatingCount = 0;
     int posLeft = in.size() - idxIn;
@@ -66,26 +67,27 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
     //iterate through all possible options
     if (in[idxIn] == '-'){
         //loops through all possibilites i think i need to edit this loop in particular
-        bool usedFloating = false;
-        for (char c : floating){
-            usedFloating = true;
-            tempString[idxIn] = c;
-            floatingUsage[c]--;
-            wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
-            tempString[idxIn] = '-';
-            floatingUsage[c]++;
+        for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
+            char c = it->first;
+            usedChars.insert(c);
+            if (floatingUsage[c] > 0){
+                tempString[idxIn] = c;
+                floatingUsage[c]--;
+                wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString, usedChars);
+                tempString[idxIn] = '-';
+                floatingUsage[c]++;
+            }
         }
         for (int i = 0; i < 26; i++){
-            if (usedFloating){
-                continue;
+            if (usedChars.count(i+'a') == 0){
+                tempString[idxIn] = i + 'a';
+                wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString, usedChars);
+                tempString[idxIn] = in[idxIn];
             }
-            tempString[idxIn] = i + 'a';
-            wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
-            tempString[idxIn] = in[idxIn];
         }
     }else{
         //skips if there is a letter already inserted and green
-        wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
+        wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString, usedChars);
     }
     //if nothing works T_T hopefully never
     return;
