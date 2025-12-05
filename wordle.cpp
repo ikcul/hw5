@@ -32,41 +32,40 @@ std::set<std::string> wordle(
 // Define any helper functions here
 bool wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, int idxFloat, std::set<std::string>& answerBank, std::string& tempString){
     //base case
-    if (idxIn >= in.size()){
+    if (idxIn >= in.size() && idxFloat >= floating.size()){
         return true;
     }
     //iterate through all possible options
     if (in[idxIn] == '-'){
         if (idxFloat < floating.size()){
             tempString[idxIn] = floating[idxFloat];
-            bool status = wordleHelper(in, floating, dict, idxIn++, idxFloat++, answerBank, tempString);
+            bool status = wordleHelper(in, floating, dict, idxIn + 1, idxFloat + 1, answerBank, tempString);
+            tempString[idxIn] = in[idxIn];
             if (status){
                 if (dict.find(tempString) != dict.end()){
                     answerBank.insert(tempString);
                 }
-                return true;
             }
         }else{
             for (int i = 0; i < 26; i++){
                 tempString[idxIn] = i + 'a';
-                bool status = wordleHelper(in, floating, dict, idxIn++, idxFloat, answerBank, tempString);
+                bool status = wordleHelper(in, floating, dict, idxIn + 1, idxFloat, answerBank, tempString);
+                tempString[idxIn] = in[idxIn];
                 if (status){
                     //smth smth smth... tbd ig
                     if (dict.find(tempString) != dict.end()){
                         answerBank.insert(tempString);
                     }
-                    return true;
                 }
             }  
         }
     }else{
         //skips if there is a letter already inserted and green
-        bool status = wordleHelper(in, floating, dict, idxIn++, idxFloat, answerBank, tempString);
+        bool status = wordleHelper(in, floating, dict, idxIn + 1, idxFloat, answerBank, tempString);
         if (status){
             if (dict.find(tempString) != dict.end()){
                 answerBank.insert(tempString);
             }
-            return true;
         }
     }
     //if nothing works T_T hopefully never
