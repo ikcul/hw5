@@ -41,7 +41,7 @@ std::set<std::string> wordle(
 }
 
 // Define any helper functions here
-void wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, std::map<char, int>& floatingUsage, std::set<std::string>& answerBank, std::string& tempString, int floatingRemaining, int blanks){
+void wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, size_t idxIn, std::map<char, int>& floatingUsage, std::set<std::string>& answerBank, std::string& tempString, int floatingRemaining, int blanks){
     //prune before even doing anything
     if (floatingRemaining > blanks){
         return;
