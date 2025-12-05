@@ -79,11 +79,13 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
             }
         }
         //uses the set to see if its not in the set and then continues the branch
-        for (int i = 0; i < 26; i++){
-            if (usedChars.count(i + 'a') == 0){
-                tempString[idxIn] = i + 'a';
-                wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
-                tempString[idxIn] = in[idxIn];
+        if(floatingCount <= posLeft - 1){
+            for (int i = 0; i < 26; i++){
+                if (usedChars.count(i + 'a') == 0){
+                    tempString[idxIn] = i + 'a';
+                    wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
+                    tempString[idxIn] = '-';
+                }
             }
         }
     }else{
