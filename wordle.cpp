@@ -69,8 +69,8 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
         //loops through all possibilites i think i need to edit this loop in particular
         for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
             char c = it->first;
-            usedChars.insert(c);
             if (floatingUsage[c] > 0){
+                usedChars.insert(c);
                 tempString[idxIn] = c;
                 floatingUsage[c]--;
                 wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString, usedChars);
@@ -79,7 +79,7 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
             }
         }
         for (int i = 0; i < 26; i++){
-            if (usedChars.count(i+'a') == 0){
+            if (usedChars.count(i + 'a') == 0){
                 tempString[idxIn] = i + 'a';
                 wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString, usedChars);
                 tempString[idxIn] = in[idxIn];
