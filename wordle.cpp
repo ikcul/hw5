@@ -63,26 +63,16 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
     }
     //iterate through all possible options
     if (in[idxIn] == '-'){
-        std::set<char> usedChars;
-        //loops through all possibilites i think i need to edit this loop in particular
-        for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
-            char c = it->first;
-            if (floatingUsage[c] > 0){
-                usedChars.insert(c);
-                tempString[idxIn] = c;
+        for (int i = 0; i < 26; i++){
+            char c = i + 'a';
+            tempString[idxIn] = c;
+            if (floatingUsage.count(c) && floatingUsage[c] > 0){
                 floatingUsage[c]--;
                 wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
-                tempString[idxIn] = '-';
                 floatingUsage[c]++;
-            }
-        }
-        //uses the set to see if its not in the set and then continues the branch
-        if(floatingCount <= posLeft - 1){
-            for (int i = 0; i < 26; i++){
-                if (usedChars.count(i + 'a') == 0){
-                    tempString[idxIn] = i + 'a';
+            }else{
+                if (floatingCount <= posLeft - 1){
                     wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
-                    tempString[idxIn] = '-';
                 }
             }
         }
