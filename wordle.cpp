@@ -51,6 +51,7 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
         //checks if it is a valid word
         if (dict.find(tempString) != dict.end()){
             bool used = true;
+            //ensures that all the floating letters have been used
             for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
                 if (it->second != 0){
                     used = false;
@@ -81,6 +82,7 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
         //uses the set to see if its not in the set and then continues the branch
         if(floatingRemaining <= blanks - 1){
             for (int i = 0; i < 26; i++){
+                //checks to see if the char was not used yet
                 if (usedChars.count(i + 'a') == 0){
                     tempString[idxIn] = i + 'a';
                     wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString, floatingRemaining, blanks - 1);
