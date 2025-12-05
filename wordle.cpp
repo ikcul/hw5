@@ -52,12 +52,6 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
         if (dict.find(tempString) != dict.end()){
             bool used = true;
             //ensures that all the floating letters have been used
-            for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
-                if (it->second != 0){
-                    used = false;
-                    break;
-                }
-            }
             if (used){
                 answerBank.insert(tempString);
             }
