@@ -37,18 +37,20 @@ std::set<std::string> wordle(
 // Define any helper functions here
 void wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, std::map<char, int> floatingUsage, std::set<std::string>& answerBank, std::string& tempString){
     //base case
-    if (idxIn >= in.size() && dict.find(tempString) != dict.end()){
-        bool used = true;
-        for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
-            if (it->second != 0){
-                used = false;
-                break;
+    if (idxIn >= in.size()){
+        if (dict.find(tempString) != dict.end()){
+            bool used = true;
+            for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
+                if (it->second != 0){
+                    used = false;
+                    break;
+                }
             }
+            if (used){
+                answerBank.insert(tempString);
+            }
+            return;
         }
-        if (used){
-            answerBank.insert(tempString);
-        }
-        return;
     }
     //iterate through all possible options
     if (in[idxIn] == '-'){
