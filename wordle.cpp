@@ -24,50 +24,51 @@ std::set<std::string> wordle(
     // Add your code here
     std::set<std::string> answerBank;
     std::string temp = in; 
-    bool tempStr = wordleHelper(in, floating, dict, 0, 0, answerBank, temp);
+    std::map<char, int> floatingUsage;
+    for (char c : floating){
+        floatingUsage[c]++;
+    }
+
+    bool tempStr = wordleHelper(in, floating, dict, 0, floatingUsage, answerBank, temp);
     return answerBank;
     
 }
 
 // Define any helper functions here
-bool wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, int idxFloat, std::set<std::string>& answerBank, std::string& tempString){
+void wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, std::map<char, int> floatingUsage, std::set<std::string>& answerBank, std::string& tempString){
     //base case
-    if (idxIn >= in.size() && idxFloat >= floating.size()){
-        return true;
+    if (idxIn >= in.size() && dict.find(tempString) != dict.end()){
+        bool used = true;
+        for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
+            if (it->second != 0){
+                used = false;
+                break;
+            }
+        }
+        if (used){
+            answerBank.insert(tempString);
+        }
+        return;
     }
     //iterate through all possible options
     if (in[idxIn] == '-'){
-        if (idxFloat < floating.size()){
-            tempString[idxIn] = floating[idxFloat];
-            bool status = wordleHelper(in, floating, dict, idxIn + 1, idxFloat + 1, answerBank, tempString);
-            tempString[idxIn] = in[idxIn];
-            if (status){
-                if (dict.find(tempString) != dict.end()){
-                    answerBank.insert(tempString);
-                }
+        for (int i = 0; i < 26; i++){
+            tempString[idxIn] = i + 'a';
+            bool used = false;
+            if (floatingUsage.count(i+'a') && floatingUsage[i + 'a'] > 0){
+                floatingUsage[i + 'a']--;
+                used = true;
             }
-        }else{
-            for (int i = 0; i < 26; i++){
-                tempString[idxIn] = i + 'a';
-                bool status = wordleHelper(in, floating, dict, idxIn + 1, idxFloat, answerBank, tempString);
-                tempString[idxIn] = in[idxIn];
-                if (status){
-                    //smth smth smth... tbd ig
-                    if (dict.find(tempString) != dict.end()){
-                        answerBank.insert(tempString);
-                    }
-                }
-            }  
+            wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
+            tempString[idxIn] = in[idxIn];
+            if (used){
+                floatingUsage[i + 'a']++;
+            }
         }
     }else{
         //skips if there is a letter already inserted and green
-        bool status = wordleHelper(in, floating, dict, idxIn + 1, idxFloat, answerBank, tempString);
-        if (status){
-            if (dict.find(tempString) != dict.end()){
-                answerBank.insert(tempString);
-            }
-        }
+        wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
     }
     //if nothing works T_T hopefully never
-    return false;
+    return;
 }
