@@ -49,8 +49,8 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
             if (used){
                 answerBank.insert(tempString);
             }
-            return;
         }
+        return;
     }
     //iterate through all possible options
     if (in[idxIn] == '-'){
