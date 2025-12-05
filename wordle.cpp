@@ -50,7 +50,9 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
     if (idxIn >= in.size()){
         //checks if it is a valid word
         if (dict.find(tempString) != dict.end()){
-            answerBank.insert(tempString);
+            if (floatingRemaining == 0){
+                answerBank.insert(tempString);
+            }
         }
         return;
     }
