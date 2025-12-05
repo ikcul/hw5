@@ -61,7 +61,7 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
                 floatingCount+= it->second;
             }
         }
-        if (floatingCount <= idxIn){
+        if (floatingCount <= posLeft){
             for (int i = 0; i < 26; i++){
                 tempString[idxIn] = i + 'a';
                 bool used = false;
