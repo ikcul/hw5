@@ -40,9 +40,7 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
     int floatingCount = 0;
     int posLeft = in.size() - idxIn;
     for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
-        if (it->second != 0){
-            floatingCount+= it->second;
-        }
+        floatingCount+= it->second;
     }if (floatingCount > posLeft){
         return;
     }
