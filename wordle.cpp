@@ -36,7 +36,7 @@ std::set<std::string> wordle(
 
 // Define any helper functions here
 void wordleHelper(const std::string& in, const std::string& floating, const std::set<std::string>& dict, int idxIn, std::map<char, int>& floatingUsage, std::set<std::string>& answerBank, std::string& tempString){
-    //base case
+    //prune before even doing anything
     int floatingCount = 0;
     int posLeft = in.size() - idxIn;
     for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
@@ -46,7 +46,9 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
     }if (floatingCount > posLeft){
         return;
     }
+    //base case
     if (idxIn >= in.size()){
+        //checks if it is a valid word
         if (dict.find(tempString) != dict.end()){
             bool used = true;
             for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
@@ -63,18 +65,23 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
     }
     //iterate through all possible options
     if (in[idxIn] == '-'){
+        //loops through all possibilites i think i need to edit this loop in particular
+        bool usedFloating = false;
+        for (char c : floating){
+            usedFloating = true;
+            tempString[idxIn] = c;
+            floatingUsage[c]--;
+            wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
+            tempString[idxIn] = '-';
+            floatingUsage[c]++;
+        }
         for (int i = 0; i < 26; i++){
-            tempString[idxIn] = i + 'a';
-            bool used = false;
-            if (floatingUsage.count(i+'a') && floatingUsage[i + 'a'] > 0){
-                floatingUsage[i + 'a']--;
-                used = true;
+            if (usedFloating){
+                continue;
             }
+            tempString[idxIn] = i + 'a';
             wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
             tempString[idxIn] = in[idxIn];
-            if (used){
-                floatingUsage[i + 'a']++;
-            }
         }
     }else{
         //skips if there is a letter already inserted and green
