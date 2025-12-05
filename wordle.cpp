@@ -54,18 +54,29 @@ void wordleHelper(const std::string& in, const std::string& floating, const std:
     }
     //iterate through all possible options
     if (in[idxIn] == '-'){
-        for (int i = 0; i < 26; i++){
-            tempString[idxIn] = i + 'a';
-            bool used = false;
-            if (floatingUsage.count(i+'a') && floatingUsage[i + 'a'] > 0){
-                floatingUsage[i + 'a']--;
-                used = true;
+        int floatingCount = 0;
+        int posLeft = in.size() - idxIn;
+        for (auto it = floatingUsage.begin(); it != floatingUsage.end(); ++it){
+            if (it->second != 0){
+                floatingCount++;
             }
-            wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
-            tempString[idxIn] = in[idxIn];
-            if (used){
-                floatingUsage[i + 'a']++;
+        }
+        if (floatingCount <= idxIn){
+            for (int i = 0; i < 26; i++){
+                tempString[idxIn] = i + 'a';
+                bool used = false;
+                if (floatingUsage.count(i+'a') && floatingUsage[i + 'a'] > 0){
+                    floatingUsage[i + 'a']--;
+                    used = true;
+                }
+                wordleHelper(in, floating, dict, idxIn + 1, floatingUsage, answerBank, tempString);
+                tempString[idxIn] = in[idxIn];
+                if (used){
+                    floatingUsage[i + 'a']++;
+                }
             }
+        }else{
+            return;
         }
     }else{
         //skips if there is a letter already inserted and green
