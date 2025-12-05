@@ -29,7 +29,7 @@ std::set<std::string> wordle(
         floatingUsage[c]++;
     }
 
-    bool tempStr = wordleHelper(in, floating, dict, 0, floatingUsage, answerBank, temp);
+    wordleHelper(in, floating, dict, 0, floatingUsage, answerBank, temp);
     return answerBank;
     
 }
