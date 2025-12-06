@@ -37,14 +37,15 @@ bool schedule(
     }
     sched.clear();
     // Add your code below
-    //need something to count each day and such
+    //used to count how many shifts the worker picked up
     std::vector<size_t> workerShifts(avail[0].size(), 0);
-    //reintialize sched after the sched.clear
+    //reintialize sched after the sched.clear()
     size_t temp = avail.size();
     for (size_t i = 0; i < temp; i++){
         std::vector<Worker_T> tempRow(dailyNeed, INVALID_ID);
         sched.push_back(tempRow);
     }
+    //used to check each day of the working
     std::set<Worker_T> alreadyWorking;
     return scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, 0, 0, alreadyWorking);
 
@@ -60,8 +61,10 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     if (day >= sched.size()){
         return true;
     }
+    //loops through all the workers checking their availability
     for (Worker_T w = 0; w < avail[0].size(); w++){
         if (avail[day][w] == true && workerShifts[w] < maxShifts){
+            //checks to see if the worker is already working a shift that day
             if (alreadyWorking.count(w) == 0){
                 alreadyWorking.insert(w);
                 workerShifts[w]++;
@@ -69,6 +72,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
                 if (scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day, col + 1, alreadyWorking)){
                     return true;
                 }
+                //basically backtracking 
                 sched[day][col] = INVALID_ID;
                 workerShifts[w]--;
                 alreadyWorking.erase(w);
