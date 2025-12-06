@@ -54,8 +54,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     //move to the next day if the col is out of bounds
     if (col >= sched[day].size()){
         alreadyWorking.clear();
-        scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day + 1, 0, alreadyWorking);
-        return false;
+        return scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day + 1, 0, alreadyWorking);
     }
     //this is the base case
     if (day >= sched.size()){
@@ -72,6 +71,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
                 }
                 sched[day][col] = INVALID_ID;
                 workerShifts[w]--;
+                alreadyWorking.erase(w);
             }
         }
     }
