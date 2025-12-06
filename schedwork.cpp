@@ -21,7 +21,7 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 
 // Add prototypes for any helper functions here
-void scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, std::vector<size_t>& workerShifts, size_t day, size_t col);
+bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, std::vector<size_t>& workerShifts, size_t day, size_t col, std::set<Worker_T>& alreadyWorking);
 
 // Add your implementation of schedule() and other helper functions here
 
@@ -45,32 +45,35 @@ bool schedule(
         std::vector<Worker_T> tempRow(dailyNeed, INVALID_ID);
         sched.push_back(tempRow);
     }
-    scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, 0, 0);
-    return sched[sched.size()-1][sched[sched.size()-1].size()-1] != INVALID_ID;
+    std::set<Worker_T> alreadyWorking;
+    return scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, 0, 0);
 
 
 }
-void scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, std::vector<size_t>& workerShifts, size_t day, size_t col){
+bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, std::vector<size_t>& workerShifts, size_t day, size_t col, std::set<Worker_T>& alreadyWorking){
     //move to the next day if the col is out of bounds
     if (col >= sched[day].size()){
-        scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day + 1, 0);
+        alreadyWorking.clear();
+        scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day + 1, 0, alreadyWorking);
+        return false;
     }
     //this is the base case
     if (day >= sched.size()){
-        return;
+        return true;
     }
-    std::set<Worker_T> alreadyWorking;
     for (Worker_T w = 0; w < avail[0].size(); w++){
         if (avail[day][w] == true && workerShifts[w] < maxShifts){
             if (alreadyWorking.count(w) == 0){
                 alreadyWorking.insert(w);
                 workerShifts[w]++;
                 sched[day][col] = w;
-                scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day, col + 1);
+                if (scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day, col + 1)){
+                    return true;
+                }
                 sched[day][col] = INVALID_ID;
                 workerShifts[w]--;
             }
         }
     }
-    return;
+    return false;
 }
