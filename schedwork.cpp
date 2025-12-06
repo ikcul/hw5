@@ -59,8 +59,8 @@ void scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     if (day >= sched.size()){
         return;
     }
+    std::set<Worker_T> alreadyWorking;
     for (Worker_T w = 0; w < avail[0].size(); w++){
-        std::set<Worker_T> alreadyWorking;
         if (avail[day][w] == true && workerShifts[w] < maxShifts){
             if (alreadyWorking.count(w) == 0){
                 alreadyWorking.insert(w);
