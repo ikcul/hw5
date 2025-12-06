@@ -46,7 +46,7 @@ bool schedule(
         sched.push_back(tempRow);
     }
     std::set<Worker_T> alreadyWorking;
-    return scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, 0, 0);
+    return scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, 0, 0, alreadyWorking);
 
 
 }
@@ -67,7 +67,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
                 alreadyWorking.insert(w);
                 workerShifts[w]++;
                 sched[day][col] = w;
-                if (scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day, col + 1)){
+                if (scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day, col + 1, alreadyWorking)){
                     return true;
                 }
                 sched[day][col] = INVALID_ID;
