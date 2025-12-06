@@ -21,7 +21,7 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 
 // Add prototypes for any helper functions here
-
+void scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, std::vector<int>& workerShifts, int day, int col);
 
 // Add your implementation of schedule() and other helper functions here
 
@@ -37,9 +37,40 @@ bool schedule(
     }
     sched.clear();
     // Add your code below
-
-
+    //need something to count each day and such
+    std::vector<int> workerShifts(avail[0].size(), 0);
+    //reintialize sched after the sched.clear
+    size_t temp = avail.size();
+    for (int i = 0; i < temp; i++){
+        std::vector<Worker_T> tempRow(dailyNeed, INVALID_ID);
+        sched.push_back(tempRow);
+    }
+    scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, 0, 0);
+    return sched[sched.size()-1][sched[sched.size()-1].size()-1] != INVALID_ID;
 
 
 }
-
+void scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, std::vector<int>& workerShifts, int day, int col){
+    //move to the next day if the col is out of bounds
+    if (col >= sched[day].size()){
+        scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day + 1, 0);
+    }
+    //this is the base case
+    if (day >= sched.size()){
+        return;
+    }
+    for (Worker_T w = 0; w < avail[0].size(); w++){
+        std::set<Worker_T> alreadyWorking;
+        if (avail[day][w] == true && workerShifts[w] < maxShifts){
+            if (alreadyWorking.count(w) == 0){
+                alreadyWorking.insert(w);
+                workerShifts[w]++;
+                sched[day][col] = w;
+                scheduleHelper(avail, dailyNeed, maxShifts, sched, workerShifts, day, col + 1);
+                sched[day][col] = INVALID_ID;
+                workerShifts[w]--;
+            }
+        }
+    }
+    return;
+}
